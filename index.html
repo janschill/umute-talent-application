@@ -1,0 +1,96 @@
+<div class="tau">
+  <div class="tau__inner">
+    Hvis jeg er prissat til
+    <input class="tau__input tau__input--long" type="number" name="person-value" id="person-value" value="250"> kr.
+    og laver
+    <input class="tau__input tau__input--short" type="number" name="amount" id="amount" value="20">
+    lydhilsner.<br>
+    Tjener jeg omkring <span class="tau__output" id="earnings"></span> på <span class="tau__output" id="effort"></span>.
+  </div>
+</div>
+
+<script>
+  window.onload = () => {
+    const $personValueInput = document.querySelector('#person-value')
+    const $amountInput = document.querySelector('#amount')
+    const $earningsOutput = document.querySelector('#earnings')
+    const $effortOutput = document.querySelector('#effort')
+    const timeToCompleteRecordingInMinutes = 0.5
+    const commissionAmountInPercentage = 0.9
+
+    function calculateValue (personValue, personAmount, commission) {
+      return personValue * personAmount * commission
+    }
+
+    function calculateEffortInMinutes (numberOfRecordings, time) {
+      return numberOfRecordings * time
+    }
+
+    function setValueOnElement ($element, value, unit) {
+      $element.innerHTML = `${value} ${unit}`
+    }
+
+    function setEarnings() {
+      const inputValue = parseInt($personValueInput.value, 10) || 1
+      const amount = parseInt($amountInput.value, 10) || 1
+      setValueOnElement($earningsOutput, calculateValue(inputValue, amount, commissionAmountInPercentage), 'kr.')
+    }
+
+    function setEarningsAndEffort () {
+      const amount = parseInt($amountInput.value, 10) || 1
+      setEarnings()
+      setValueOnElement($effortOutput, calculateEffortInMinutes(amount, timeToCompleteRecordingInMinutes), 'minutter')
+    }
+
+    $personValueInput.oninput = setEarningsAndEffort
+    $personValueInput.onpropertychange = setEarningsAndEffort
+    $amountInput.oninput = setEarningsAndEffort
+    $amountInput.onpropertychange = setEarningsAndEffort
+
+    setEarningsAndEffort()
+  }
+</script>
+
+<style>
+  .tau {
+    font-family: 'Roboto', arial;
+    font-size: 32px;
+    background-color: #eef1f2;
+    padding: 40px 20px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    line-height: 1.8;
+  }
+
+  .tau__inner {
+    text-align: center;
+  }
+
+  .tau__input::-webkit-outer-spin-button,
+  .tau__input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .tau__input {
+    font-size: inherit;
+    text-align: center;
+    font-weight: bold;
+    color: black !important;
+    padding: 0 !important;
+  }
+
+  .tau__input--long {
+    width: 75px;
+  }
+
+  .tau__input--short {
+    width: 62px;
+  }
+
+  .tau__output {
+    color: #f58c76;
+    font-weight: bold;
+  }
+</style>
